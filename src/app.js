@@ -10,6 +10,7 @@ const limiter = require('./middleware/rateLimit');
 const routes  = require('./routes/index')
 
 const app = express();
+require('dotenv').config();
 
 //  Add security headers
 app.use(helmet());
@@ -39,7 +40,12 @@ app.use(errorHandler);
 app.use('/api',routes);
 
 // 6️⃣ Start the server
-const PORT = process.env.PORT || 8001;
-app.listen(PORT, () => {
-  console.log(`✅ Server running on http://localhost:${PORT}`);
-});
+const PORT = process.env.PORT || 8000;
+connectDb().then(()=>{
+    app.listen(PORT , () => {
+        console.log("Server running on "+ PORT)
+    })
+})
+.catch((err) => {
+    console.log("DB connection failed !!"+ err)
+})
