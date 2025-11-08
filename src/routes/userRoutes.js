@@ -6,5 +6,7 @@ const { verifyToken } = require('../middleware/authMiddleware');
 
 // 🔐 Define routes
 router.get('/profile', verifyToken,userController.getUserProfile);
+router.post('/addActivity', verifyToken,userController.addActivity);
+router.post('/getActivity', verifyToken,userController.getActivities);
 
 module.exports = router;
