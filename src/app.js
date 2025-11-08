@@ -4,28 +4,24 @@ const cors = require('cors');
 const morgan = require('morgan');
 const winston = require('winston');
 const helmet = require('helmet');
+require('dotenv').config();
+const { errorHandler, notFoundHandler } = require('./middleware/errorHandler');
+const limiter = require('./middleware/rateLimit');
+const routes  = require('./routes/index')
 
 const app = express();
 
 //  Add security headers
 app.use(helmet());
-
-//  Enable CORS
 app.use(cors());
-//  Log HTTP requests
 app.use(morgan('combined'));
 
 // Limit repeated requests (100 per 15 min per IP)
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  message: 'Too many requests from this IP, please try again later.'
-});
 app.use(limiter);
 
-// app.use((req,res,next))
-
-// 5️⃣ Create a Winston logger (for saving logs to file)
+// limit request body to 10 MB
+app.use(express.json({ limit: '500mb' })); 
+app.use(express.urlencoded({ limit: '500mb', extended: true }));
 const logger = winston.createLogger({
   level: 'info',
   format: winston.format.combine(
@@ -37,15 +33,13 @@ const logger = winston.createLogger({
     new winston.transports.File({ filename: 'logs/app.log' }),
   ],
 });
-
+app.use(notFoundHandler);
+app.use(errorHandler);
 // Example route
-app.get('/', (req, res) => {
-  logger.info('Root route accessed');
-  res.send('🚀 Secure Node.js Express server running!');
-});
+app.use('/api',routes);
 
 // 6️⃣ Start the server
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 8001;
 app.listen(PORT, () => {
   console.log(`✅ Server running on http://localhost:${PORT}`);
 });
