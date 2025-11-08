@@ -47,7 +47,6 @@ const logger = winston.createLogger({
     new winston.transports.File({ filename: 'logs/app.log' }),
   ],
 });
-app.use(notFoundHandler);
 app.use(errorHandler);
 
 // Example route
