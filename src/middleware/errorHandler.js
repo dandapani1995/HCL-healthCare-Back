@@ -4,7 +4,6 @@ exports.notFoundHandler = (req, res, next) => {
     message: `Route not found: ${req.originalUrl}`,
   });
 };
-
 exports.errorHandler = (err, req, res, next) => {
   console.error('❌ Error:', err.stack || err);
 
