@@ -13,12 +13,14 @@ exports.login = async (req, res, next) => {
       throw err;
     }
     const userData = await User.findOne({email:email});
+    const RoleData = await Role.findOne({_id:userData.role});
+
     const isMatch = await bcrypt.compare(password, userData.password);
     if(!isMatch){
       res.status(401).json({ success: false, message: Message[1005] });
     }else{
         // Example dummy authentication
-         const token =  generateToken({id:userData._id,name:userData.name,role:userData.role,email:userData.email});
+         const token =  generateToken({id:userData._id,name:userData.name,role:RoleData.role,email:userData.email});
          res.status(200).json({ success: true,data:token, message: Message[1003] });
     }
 
@@ -43,9 +45,9 @@ exports.register = async (req, res, next) => {
      const salt = await bcrypt.genSalt(10);
      const hash = await bcrypt.hash(password, salt);
      req.body.password = hash;
-     req.body.role = RoleData._id;
+     req.body.role = RoleData.role;
      const result = await User.create(req.body)
-     const token =  generateToken({id:result._id,name,role,email});
+     const token =  generateToken({id:result._id,name,role:RoleData.role,email});
      res.status(201).json({ success: true,data:token, message: Message[1003] });
   } catch (error) {
     next(error);
