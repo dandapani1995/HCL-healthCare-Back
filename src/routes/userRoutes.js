@@ -7,6 +7,6 @@ const { Authentication } = require('../middleware/authMiddleware');
 // 🔐 Define routes
 router.get('/profile', Authentication, userController.getUserProfile);
 router.post('/addActivity', Authentication, userController.addActivity);
-router.post('/getActivity', Authentication, userController.getActivities);
+router.get('/getActivity', Authentication, userController.getActivities);
 
 module.exports = router;
