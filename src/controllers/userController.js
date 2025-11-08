@@ -2,7 +2,6 @@ const User = require('../models/user');
 const Message = require('../utills/constant');
 const Activity = require('../models/activity');
 
-
 exports.getUserProfile = async (req, res, next) => {
   try {
     const { email} = req.body;
@@ -22,24 +21,20 @@ exports.getUserProfile = async (req, res, next) => {
     next(error); // Pass to global error handler
   }
 };
-
 exports.addActivity = async (req, res, next) => {
   try {
     const { sleep, water, steps } = req.body;
-
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
-
     const existingActivity = await Activity.findOne({
       userId: req.user._id,
       date: { $gte: today, $lt: tomorrow },
     })
 
     if(existingActivity){
-      return res.status(400).json({ success: false, message: 'Activity already exists for today' });
+      return res.status(400).json({ success: false, message: Message[1009] });
     }
 
     const activity = {
@@ -50,9 +45,9 @@ exports.addActivity = async (req, res, next) => {
     };
     const createdAActvity = await Activity.create(activity);
     if(!createdAActvity){
-      return res.status(400).json({ success: false, message: 'Activity not created'});
+      return res.status(400).json({ success: false, message: Message[1010]});
     }
-    res.status(201).json({ success: true, message: 'Activity Created!' });
+    res.status(201).json({ success: true, message: Message[1011] });
   } catch (error) {
     next(error); // Pass to global error handler
   }
@@ -71,7 +66,7 @@ exports.getActivities = async (req, res, next) => {
       $lte: endOfDay
     }});
 
-    res.status(200).json({ success: true,activities, message: 'Activity Found!' });
+    res.status(200).json({ success: true,activities });
   } catch (error) {
     next(error); // Pass to global error handler
   }
