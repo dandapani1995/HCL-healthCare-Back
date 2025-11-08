@@ -1,0 +1,54 @@
+
+
+# Dependencies
+node_modules/
+
+# Logs
+
+logs
+*logs/
+*.log
+npm-debug.log*
+
+# Environment files
+.env
+.env.local
+
+# Build output
+dist/
+build/
+coverage/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor / IDE files
+.vscode/
+.idea/
+*.swp
+
+# Temporary files
+*.tmp
+*.temp
+
+# TypeScript build cache (if you ever use TS)
+*.tsbuildinfo
+
+Lock files (optional)
+# package-lock.json
+# yarn.lock
+
+# PM2 logs and configs (if using PM2)
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Debugger configs
+.vscode/
+*.code-workspace
+
+# Local data / backups
+*.bak
+*.backup
