@@ -2,11 +2,11 @@ const express = require('express');
 const router = express.Router();
 
 const userController = require('../controllers/userController');
-const { verifyToken } = require('../middleware/authMiddleware');
+const { Authentication } = require('../middleware/authMiddleware');
 
 // 🔐 Define routes
-router.get('/profile', verifyToken,userController.getUserProfile);
-router.post('/addActivity', verifyToken,userController.addActivity);
-router.post('/getActivity', verifyToken,userController.getActivities);
+router.get('/profile', Authentication, userController.getUserProfile);
+router.post('/addActivity', Authentication, userController.addActivity);
+router.post('/getActivity', Authentication, userController.getActivities);
 
 module.exports = router;
