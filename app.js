@@ -4,8 +4,9 @@ const cors = require('cors');
 const morgan = require('morgan');
 const winston = require('winston');
 const helmet = require('helmet');
-
+const connectDb = require('./db/connectDb');
 const app = express();
+require('dotenv').config();
 
 //  Add security headers
 app.use(helmet());
@@ -46,6 +47,12 @@ app.get('/', (req, res) => {
 
 // 6️⃣ Start the server
 const PORT = process.env.PORT || 8000;
-app.listen(PORT, () => {
-  console.log(`✅ Server running on http://localhost:${PORT}`);
-});
+
+connectDb().then(()=>{
+    app.listen(PORT , () => {
+        console.log("Server running on "+ PORT)
+    })
+})
+.catch((err) => {
+    console.log("DB connection failed !!"+ err)
+})
