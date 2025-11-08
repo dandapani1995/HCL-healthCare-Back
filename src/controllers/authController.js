@@ -1,3 +1,6 @@
+const User = require('../models/user')
+
+
 exports.login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
@@ -21,12 +24,14 @@ exports.login = async (req, res, next) => {
 
 exports.register = async (req, res, next) => {
   try {
+console.log("hellow")
     const { name, email, password } = req.body;
-    if (!name || !email || !password) {
+    if (!name || !email || !password||! username) {
       const err = new Error('All fields are required');
       err.status = 400;
       throw err;
     }
+     await User.create(req.body)
     // Simulate DB operation
     res.status(201).json({ success: true, message: 'User registered successfully' });
   } catch (error) {

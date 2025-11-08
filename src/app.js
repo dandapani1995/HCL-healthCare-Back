@@ -1,5 +1,4 @@
 const express = require('express');
-const rateLimit = require('express-rate-limit');
 const cors = require('cors');
 const morgan = require('morgan');
 const winston = require('winston');
@@ -8,6 +7,7 @@ require('dotenv').config();
 const { errorHandler, notFoundHandler } = require('./middleware/errorHandler');
 const limiter = require('./middleware/rateLimit');
 const routes  = require('./routes/index')
+const connectDb = require('./utills/db')
 
 const app = express();
 require('dotenv').config();
@@ -34,18 +34,21 @@ const logger = winston.createLogger({
     new winston.transports.File({ filename: 'logs/app.log' }),
   ],
 });
-app.use(notFoundHandler);
+// app.use(notFoundHandler);
 app.use(errorHandler);
 // Example route
 app.use('/api',routes);
 
-// 6️⃣ Start the server
 const PORT = process.env.PORT || 8000;
-connectDb().then(()=>{
-    app.listen(PORT , () => {
-        console.log("Server running on "+ PORT)
-    })
-})
-.catch((err) => {
-    console.log("DB connection failed !!"+ err)
-})
+function serverStart(){
+  connectDb().then(()=>{
+      console.log("Database connected successfully")
+      app.listen(PORT , () => {
+          console.log("Server running on "+ PORT)
+      })
+  })
+  .catch((err) => {
+      console.log("DB connection failed !!"+ err)
+  })
+}
+serverStart()
