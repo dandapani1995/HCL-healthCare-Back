@@ -47,7 +47,7 @@ exports.addActivity = async (req, res, next) => {
     };
     const createdAActvity = await Activity.create(activity);
     if(!createdAActvity){
-      return res.status(400).json({ success: false, message: 'Activity not created' }st);
+      return res.status(400).json({ success: false, message: 'Activity not created'});
     }
 
     res.status(201).json({ success: true, message: 'Activity Created!' });
