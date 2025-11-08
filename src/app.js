@@ -14,13 +14,26 @@ require('dotenv').config();
 
 //  Add security headers
 app.use(helmet());
-app.use(cors());
 app.use(morgan('combined'));
+const allowedOrigins = process.env.ALLOWEDORIGINS;
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true, // if using cookies
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
 
-// Limit repeated requests (100 per 15 min per IP)
+app.use(cors(corsOptions));
+// Limit repeated requests 
 app.use(limiter);
 
-// limit request body to 10 MB
+// limit request body to 500 MB
 app.use(express.json({ limit: '500mb' })); 
 app.use(express.urlencoded({ limit: '500mb', extended: true }));
 const logger = winston.createLogger({
@@ -34,8 +47,9 @@ const logger = winston.createLogger({
     new winston.transports.File({ filename: 'logs/app.log' }),
   ],
 });
-// app.use(notFoundHandler);
+app.use(notFoundHandler);
 app.use(errorHandler);
+
 // Example route
 app.use('/api',routes);
 
